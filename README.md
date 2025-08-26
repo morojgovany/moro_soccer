@@ -3,7 +3,7 @@
 ## Description
 
 Moro Soccer is a configurable soccer mini-game for RedM. Players can kick or lob a ball, start and stop matches, and score against multiple goals while spectators receive score updates.
-
+[![[Morojgovany] Soccer script for redm](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fyoutu.be%2FmQWLj4m1JUQ)](https://youtu.be/mQWLj4m1JUQ)
 ## Features
 
 - Prompts for kicking, lobbing, starting, and stopping the match.
