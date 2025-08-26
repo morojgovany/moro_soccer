@@ -9,14 +9,27 @@ local function resetScores()
     end
 end
 
+local function notifyPlayers(message, originCoords)
+    local players = GetPlayers()
+    for i = 1, #players do
+        local playerId = tonumber(players[i])
+        local ped = GetPlayerPed(playerId)
+        if ped then
+            local coords = GetEntityCoords(ped)
+            if #(coords - originCoords) <= Config.notificationDistance + 0.0 then
+                TriggerEvent('moro_soccer:notify', playerId, message)
+            end
+        end
+    end
+end
+
 resetScores()
 
 RegisterNetEvent('moro_soccer:startSoccer')
 AddEventHandler('moro_soccer:startSoccer', function()
-    local _source = source
     soccerStarted = true
     TriggerClientEvent('moro_soccer:startSoccer', -1)
-    TriggerEvent('moro_soccer:notify', _source, Config.gameStarts)
+    notifyPlayers(Config.gameStarts, Config.ballCoords)
     local players = GetPlayers()
     if #players > 0 then
         local randomIndex = math.random(1, #players)
@@ -27,12 +40,11 @@ end)
 
 RegisterNetEvent('moro_soccer:stopSoccer')
 AddEventHandler('moro_soccer:stopSoccer', function()
-    local _source = source
     soccerStarted = false
     local finalScore = table.concat(score, ' - ')
     resetScores()
     TriggerClientEvent('moro_soccer:stopSoccer', -1)
-    TriggerEvent('moro_soccer:notify', _source, Config.gameEnds .. ' | Final score : '..finalScore)
+    notifyPlayers(Config.gameEnds .. ' | Final score : '..finalScore, Config.ballCoords)
 end)
 
 RegisterNetEvent('moro_soccer:shareBall')
@@ -56,19 +68,9 @@ RegisterNetEvent('moro_soccer:goal')
 AddEventHandler('moro_soccer:goal', function(goalIndex, ballCoords)
     score[goalIndex] = score[goalIndex] + 1
     TriggerClientEvent('moro_soccer:goal', -1)
+    TriggerClientEvent('moro_soccer:setScores', -1, score)
 
-    local players = GetPlayers()
     local scoreText = table.concat(score, ' - ')
     local message = Config.goalNotification..' Score '..scoreText
-    for i = 1, #players do
-        local playerId = tonumber(players[i])
-        local ped = GetPlayerPed(playerId)
-        if ped then
-            TriggerClientEvent('moro_soccer:setScores', playerId, score)
-            local coords = GetEntityCoords(ped)
-            if #(coords - ballCoords) <= Config.notificationDistance + 0.0 then
-                TriggerEvent('moro_soccer:notify', playerId, message)
-            end
-        end
-    end
+    notifyPlayers(message, ballCoords)
 end)
