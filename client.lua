@@ -179,8 +179,8 @@ local function playWhistle(whistle)
 end
 
 Citizen.CreateThread(function()
-    if not LocalPlayer.state.IsInSession then
-        repeat Wait(500) until LocalPlayer.state.IsInSession and LocalPlayer.state.Character and not IsLoadingScreenVisible() and not IsScreenFadedOut()
+    if IsLoadingScreenVisible() or IsScreenFadedOut() then
+        repeat Wait(500) until not IsLoadingScreenVisible() and not IsScreenFadedOut()
     end
     if Config.blip.enable then
         loadBlip()
@@ -231,8 +231,8 @@ local function hitBall(lobed)
 end
 
 Citizen.CreateThread(function()
-    if not LocalPlayer.state.IsInSession then
-        repeat Wait(500) until LocalPlayer.state.IsInSession and LocalPlayer.state.Character and not IsLoadingScreenVisible() and not IsScreenFadedOut()
+    if IsLoadingScreenVisible() or IsScreenFadedOut() then
+        repeat Wait(500) until not IsLoadingScreenVisible() and not IsScreenFadedOut()
     end
     Wait(math.random(500, 2000))
     TriggerServerEvent('moro_soccer:soccerStarted')
