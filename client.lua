@@ -243,15 +243,20 @@ Citizen.CreateThread(function()
         local coords = GetEntityCoords(playerPed)
         local dist = #(coords - Config.startCoords)
         if dist < 1.5 then
-            waitTime = 0
-            PromptSetActiveGroupThisFrame(startGroup, Config.startPromptGroup)
-            if Citizen.InvokeNative(0xC92AC953F0A982AE, startPrompt) then
-                TriggerServerEvent('moro_soccer:startSoccer')
-                Wait(1000)
-            end
-            if Citizen.InvokeNative(0xC92AC953F0A982AE, stopPrompt) then
-                TriggerServerEvent('moro_soccer:stopSoccer')
-                Wait(1000)
+            if not IsPedDeadOrDying(playerPed)
+                and not IsPedOnMount(playerPed)
+                and not IsPedInCombat(playerPed)
+                and not IsPedInMeleeCombat(playerPed) then
+                waitTime = 0
+                PromptSetActiveGroupThisFrame(startGroup, CreateVarString(10, 'LITERAL_STRING', Config.startPromptGroup))
+                if Citizen.InvokeNative(0xC92AC953F0A982AE, startPrompt) then
+                    TriggerServerEvent('moro_soccer:startSoccer')
+                    Wait(1000)
+                end
+                if Citizen.InvokeNative(0xC92AC953F0A982AE, stopPrompt) then
+                    TriggerServerEvent('moro_soccer:stopSoccer')
+                    Wait(1000)
+                end
             end
         end
         Wait(waitTime)
@@ -289,15 +294,20 @@ AddEventHandler('moro_soccer:startSoccer', function()
                 end
             end
             if distance <= Config.hitDistance then
-                waitTime = 0
-                PromptSetActiveGroupThisFrame(promptGroup, Config.promptGroup)
-                if Citizen.InvokeNative(0xC92AC953F0A982AE, hitPrompt) then
-                    hitBall()
-                    Wait(100)
-                end
-                if Citizen.InvokeNative(0xC92AC953F0A982AE, lobedPrompt) then
-                    hitBall(true)
-                    Wait(100)
+                if not IsPedDeadOrDying(playerPed)
+                    and not IsPedOnMount(playerPed)
+                    and not IsPedInCombat(playerPed)
+                    and not IsPedInMeleeCombat(playerPed) then
+                    waitTime = 0
+                    PromptSetActiveGroupThisFrame(promptGroup, CreateVarString(10, 'LITERAL_STRING', Config.promptGroup))
+                    if Citizen.InvokeNative(0xC92AC953F0A982AE, hitPrompt) then
+                        hitBall()
+                        Wait(100)
+                    end
+                    if Citizen.InvokeNative(0xC92AC953F0A982AE, lobedPrompt) then
+                        hitBall(true)
+                        Wait(100)
+                    end
                 end
             end
             if Config.useEntityGoal then
