@@ -108,9 +108,14 @@ local function spawnBall()
     SetEntityVisible(ball, true)
     SetEntityCollision(ball, true, true)
     SetEntityInvincible(ball, true)
-    SetNetworkIdExistsOnAllMachines(ball, true)
-    Wait(250)
+    NetworkRegisterEntityAsNetworked(ball)
     local netId = ObjToNet(ball)
+    while not NetworkDoesNetworkIdExist(netId) do
+        Wait(250)
+        netId = ObjToNet(ball)
+    end
+    SetNetworkIdExistsOnAllMachines(netId, true)
+    Wait(250)
     TriggerServerEvent('moro_soccer:shareBall', netId)
 end
 
